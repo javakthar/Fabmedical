@@ -61,27 +61,27 @@ jobs:
     needs: [build-and-publish-docker-image,build-and-push-helm-chart]
  	steps:
      # Checkout the repo
-     - uses: actions/checkout@master
+    - uses: actions/checkout@master
 
-     - name: Helm Install
-       uses: azure/setup-helm@v1
+    - name: Helm Install
+      uses: azure/setup-helm@v1
 
-     - name: kubeconfig
-       run: echo "${{ secrets.KUBECONFIG }}" >> kubeconfig
+    - name: kubeconfig
+      run: echo "${{ secrets.KUBECONFIG }}" >> kubeconfig
 
-     - name: Helm Repo Add
-       run: |
+    - name: Helm Repo Add
+      run: |
          helm repo add ${{ env.containerRegistry }} https://${{ env.containerRegistry }}/helm/v1/repo --username ${{ secrets.ACR_USERNAME }} --password ${{ secrets.ACR_PASSWORD }}
          helm repo update
-       env:
+      env:
          HELM_EXPERIMENTAL_OCI: 1
 
-     - name: Helm Upgrade
-       run: |
+    - name: Helm Upgrade
+      run: |
          helm registry login ${{ env.containerRegistry }} --username ${{ secrets.ACR_USERNAME }} --password ${{ secrets.ACR_PASSWORD }}
          helm chart pull ${{ env.containerRegistry }}/helm/content-web:v${{ env.tag }}
          helm chart export ${{ env.containerRegistry }}/helm/content-web:v${{ env.tag }} --destination ./upgrade
          helm upgrade web ./upgrade/web
-       env:
+      env:
          KUBECONFIG: './kubeconfig'
          HELM_EXPERIMENTAL_OCI: 1
