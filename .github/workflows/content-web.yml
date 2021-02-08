@@ -59,7 +59,7 @@ jobs:
     name: AKS Deployment
     runs-on: ubuntu-latest
     needs: [build-and-publish-docker-image,build-and-push-helm-chart]
- 	steps:
+ 	  steps:
      # Checkout the repo
     - uses: actions/checkout@master
 
